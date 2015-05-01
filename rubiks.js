@@ -89,13 +89,38 @@ define(function(require, exports, module) {
             { x:  0, y:  1 },
             { x:  1, y:  1 },
         ];
+        var sides = [ 'front', 'back', 'top', 'bottom', 'left', 'right' ];
+        
+        function frontTransform(position) {
+            return Transform.translate(position.x * (width/3), position.y * (height/3), depth / 2);
+        };
+        
+        function backTransform(position) {
+            return Transform.multiply(Transform.translate(position.x * (width/3), position.y * (height/3), - depth / 2), Transform.multiply(Transform.rotateZ(Math.PI), Transform.rotateX(Math.PI)));
+        };
+        
+        function topTransform(position) {
+            return Transform.multiply(Transform.translate(position.x * (width/3), -height / 2, position.y * (height/3)), Transform.rotateX(Math.PI/2));
+        };
+        
+        function bottomTransform(position) {
+            return Transform.multiply(Transform.translate(position.x * (width/3), height / 2, position.y * (height/3)), Transform.multiply(Transform.rotateX(-Math.PI/2), Transform.rotateZ(Math.PI)));
+        };
+        
+        function leftTransform(position) {
+            return Transform.multiply(Transform.translate(-width / 2, position.x * (width/3), position.y * (height/3)), Transform.rotateY(-Math.PI/2));
+        };
+        
+        function rightTransform(position) {
+            return Transform.multiply(Transform.translate(width / 2, position.x * (width/3), position.y * (height/3)), Transform.rotateY(Math.PI/2));
+        };
 
         function createSide(params){
             var surface = new Surface({
                 size: params.size,
                 content: params.content,
                 classes: params.classes,
-                properties: params.properties
+                properties: params.properties,
             });
 
             var modifier = new Modifier({
@@ -103,17 +128,55 @@ define(function(require, exports, module) {
             });
 
             box.add(modifier).add(surface);
+            
+            surface.on('mouseover', function() {
+                //this.setContent(this.id);
+                //debugger;
+                switch (this.properties.data.side) {
+                    case 'front':
+                        this.properties.data.side = 'right';
+                        modifier.setTransform(rightTransform(this.properties.data.position), { duration: 500 });
+                        break;
+                    case 'back':
+                        this.properties.data.side = 'left';
+                        modifier.setTransform(leftTransform(this.properties.data.position), { duration: 500 });
+                        break;
+                    case 'top':
+                        this.properties.data.side = 'back';
+                        modifier.setTransform(backTransform(this.properties.data.position), { duration: 500 });
+                        break;
+                    case 'bottom':
+                        this.properties.data.side = 'front';
+                        modifier.setTransform(frontTransform(this.properties.data.position), { duration: 500 });
+                        break;
+                    case 'left':
+                        this.properties.data.side = 'bottom';
+                        modifier.setTransform(bottomTransform(this.properties.data.position), { duration: 500 });
+                        break;
+                    case 'right':
+                        this.properties.data.side = 'top';
+                        modifier.setTransform(topTransform(this.properties.data.position), { duration: 500 });
+                        break;
+                }
+            });
         };
 
         // Front
         for (var i=0; i<9; i++) {
+            // Front
             createSide({
                 size: [width/3, height/3],
                 properties: {
                     backgroundColor: 'red',
                     border: '2px solid black',
+                    data: {
+                        side: 'front',
+                        index: i,
+                        position: positions[i],
+                    },
                 },
-                transform: Transform.translate(positions[i]['x'] * (width/3), positions[i]['y'] * (height/3), depth / 2)
+                transform: frontTransform(positions[i]),
+                position: positions[i],
             });
             
             // Back
@@ -122,8 +185,14 @@ define(function(require, exports, module) {
                 properties: {
                     backgroundColor: 'blue',
                     border: '2px solid black',
+                    data: {
+                        side: 'back',
+                        index: i,
+                        position: positions[i],
+                    },
                 },
-                transform: Transform.multiply(Transform.translate(positions[i]['x'] * (width/3), positions[i]['y'] * (height/3), - depth / 2), Transform.multiply(Transform.rotateZ(Math.PI), Transform.rotateX(Math.PI))),
+                transform: backTransform(positions[i]),
+                position: positions[i],
             });
 
             // Top
@@ -132,8 +201,14 @@ define(function(require, exports, module) {
                 properties: {
                     backgroundColor: 'green',
                     border: '2px solid black',
+                    data: {
+                        side: 'top',
+                        index: i,
+                        position: positions[i],
+                    },
                 },
-                transform: Transform.multiply(Transform.translate(positions[i]['x'] * (width/3), -height / 2, positions[i]['y'] * (height/3)), Transform.rotateX(Math.PI/2)),
+                transform: topTransform(positions[i]),
+                position: positions[i],
             });
 
             // Bottom
@@ -142,8 +217,14 @@ define(function(require, exports, module) {
                 properties: {
                     backgroundColor: 'yellow',
                     border: '2px solid black',
+                    data: {
+                        side: 'bottom',
+                        index: i,
+                        position: positions[i],
+                    },
                 },
-                transform: Transform.multiply(Transform.translate(positions[i]['x'] * (width/3), height / 2, positions[i]['y'] * (height/3)), Transform.multiply(Transform.rotateX(-Math.PI/2), Transform.rotateZ(Math.PI))),
+                transform: bottomTransform(positions[i]),
+                position: positions[i],
             });
 
             // Left
@@ -152,8 +233,14 @@ define(function(require, exports, module) {
                 properties: {
                     backgroundColor: 'orange',
                     border: '2px solid black',
+                    data: {
+                        side: 'left',
+                        index: i,
+                        position: positions[i],
+                    },
                 },
-                transform: Transform.multiply(Transform.translate(-width / 2, positions[i]['x'] * (width/3), positions[i]['y'] * (height/3)), Transform.rotateY(-Math.PI/2))
+                transform: leftTransform(positions[i]),
+                position: positions[i],
             });
 
             // Right
@@ -162,8 +249,14 @@ define(function(require, exports, module) {
                 properties: {
                     backgroundColor: 'white',
                     border: '2px solid black',
+                    data: {
+                        side: 'right',
+                        index: i,
+                        position: positions[i],
+                    },
                 },
-                transform: Transform.multiply(Transform.translate(width / 2, positions[i]['x'] * (width/3), positions[i]['y'] * (height/3)), Transform.rotateY(Math.PI/2))
+                transform: rightTransform(positions[i]),
+                position: positions[i],
             });
         }
 
