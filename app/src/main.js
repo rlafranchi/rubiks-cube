@@ -42,6 +42,8 @@ define(function(require, exports, module) {
     var RenderNode = require('famous/core/RenderNode');
     var Quaternion = require('famous/math/Quaternion');
     var Vector     = require('famous/math/Vector');
+    var MouseSync = require("famous/inputs/MouseSync");
+    var ScrollSync = require("famous/inputs/ScrollSync");
     var SpinnerData = require('SpinnerData');
     //debugger;
 
@@ -55,8 +57,8 @@ define(function(require, exports, module) {
     // [ 1,  1,  0, 0] Top
     // [ 0,  0,  1, 1] Bottom
     var quaternion = new Quaternion(1, 1, 1, 0);
-    var smallQuaternion = new Quaternion(185, 1, 1, 1);
-    var frontQuaternion = new Quaternion(180, 0, 0, 0);
+    var smallQuaternion = new Quaternion(-1, 0, 0, 0);
+    //var frontQuaternion = new Quaternion(180, 0, 0, 0);
     var newQuaternion = new Quaternion(1,0,1,1);
 
     var rotationModifier = new Modifier({
@@ -75,6 +77,18 @@ define(function(require, exports, module) {
         return quaternion.getTransform();
     });
 
+    var start = 0;
+    var update = 0;
+    var end = 0;
+
+    var delta = [0,0];
+    var position = [0, 0];
+    var mouseSync = new MouseSync();
+    var scrollSync = new ScrollSync();
+
+    Engine.pipe(mouseSync);
+    Engine.pipe(scrollSync);
+
     mainContext.add(rotationModifier)
                .add(createBox(260, 260, 260));
 
@@ -89,8 +103,34 @@ define(function(require, exports, module) {
         //var y = (Math.random() * 2) - 1;
         //var z = (Math.random() * 2) - 1;
         //smallQuaternion = new Quaternion(185, x, y, z);
-        smallQuaternion = new Quaternion(-1, 0, 0, 0);
+        //smallQuaternion = new Quaternion(185, 0, 0, 0);
         //quaternion = newQuaternion;
+    });
+
+    mouseSync.on("start", function() {
+        position = [0, 0];
+    });
+
+    mouseSync.on("update", function(data) {
+        position = data.position;
+        delta = data.delta;
+    });
+
+    mouseSync.on("end", function() {
+        smallQuaternion = new Quaternion(90, delta[0]/10, delta[1]/10, -delta[1]/10)
+    });
+
+    scrollSync.on("start", function() {
+        position = [0, 0];
+    });
+
+    scrollSync.on("update", function(data) {
+        position = data.position;
+        delta = data.delta;
+    });
+
+    scrollSync.on("end", function() {
+        smallQuaternion = new Quaternion(90, delta[0]/10, delta[1]/10, -delta[1]/10)
     });
 
     // Creates box renderable
@@ -156,6 +196,10 @@ define(function(require, exports, module) {
                 properties: params.properties,
             });
 
+            var spinSurface = new Surface({
+                content: '&larr;'
+            });
+
             surfaces.push(surface);
 
             var modifier = new Modifier({
@@ -173,7 +217,7 @@ define(function(require, exports, module) {
 //                spin(true, 'bottom');
 //                spin(true, 'top');
 //                spin(true, 'back');
-                spin(true, 'middleTopBottom');
+                spin(false, 'right');
             });
         };
 
@@ -217,21 +261,32 @@ define(function(require, exports, module) {
 
                 }
 
-
-                // Front Clockwise
-                var rotation;
+                var fromPosition;
+                var fromSide;
                 for ( var square in squares ) {
-                    if ( surfData.position.x == squares[square].clockwise.fromPosition.x && surfData.position.y == squares[square].clockwise.fromPosition.y && surfData.side == squares[square].clockwise.fromSide ) {
-                        setSpin(squares[square], surfData, surf, surface);
+                    if ( clockwise == true ) {
+                        fromPosition = squares[square].clockwise.fromPosition;
+                        fromSide = squares[square].clockwise.fromSide;
+                    } else {
+                        fromPosition = squares[square].clockwise.toPosition;
+                        fromSide = squares[square].clockwise.toSide;
+                    }
+                    if ( surfData.position.x == fromPosition.x && surfData.position.y == fromPosition.y && surfData.side == fromSide ) {
+                        setSpin(squares[square], surfData, surf, surface, clockwise);
                         break;
                     }
                 }
             }
         };
 
-        function setSpin(square, surfData, surf, surface) {
-            surfData.position = square.clockwise.toPosition;
-            surfData.side = square.clockwise.toSide;
+        function setSpin(square, surfData, surf, surface, clockwise) {
+            if ( clockwise == true ) {
+                surfData.position = square.clockwise.toPosition;
+                surfData.side = square.clockwise.toSide;
+            } else {
+                surfData.position = square.clockwise.fromPosition;
+                surfData.side = square.clockwise.fromSide;
+            }
             var position = surfData.position;
             surf.setContent('x: ' + position.x + 'y: ' + position.y + ', ' + surfData.side);
             modifiers[surface].setTransform(faceTransform(position, surfData.side), {duration: 500});
