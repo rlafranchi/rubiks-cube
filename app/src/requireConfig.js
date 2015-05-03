@@ -10,3 +10,4 @@ require.config({
     }
 });
 require(['main']);
+require(['spinnerData']);
