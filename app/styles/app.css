@@ -1,8 +1,17 @@
 html {
-  background: #fff;
+  background: #888;
 }
 
 .backfaceVisibility {
   -webkit-backface-visibility: visible;
   backface-visibility: visible;
+}
+
+
+.spinner-btn {
+    color: white;
+    background-color: #555;
+}
+.spinner-btn:hover, .spinner-btn:focus  {
+    background-color: #333;
 }

@@ -1,6 +1,6 @@
 define('SpinnerData',['require','exports','module'],function(require, exports, module) {
     var SpinnerData = {}
-    var cases = ['front', 'back', 'top', 'bottom', 'left', 'right', 'middleLeftRight', 'middleTopBottom'];
+    SpinnerData.cases = ['front', 'back', 'top', 'bottom', 'left', 'right', 'middleX', 'middleY', 'middleZ'];
     SpinnerData.frontSquares = [
         {
             clockwise: {
@@ -1021,7 +1021,7 @@ define('SpinnerData',['require','exports','module'],function(require, exports, m
             }
         },
     ];
-    SpinnerData.middleLeftRightSquares = [
+    SpinnerData.middleYSquares = [
         {
             clockwise: {
                 fromSide: 'back',
@@ -1119,7 +1119,7 @@ define('SpinnerData',['require','exports','module'],function(require, exports, m
             }
         },
     ];
-    SpinnerData.middleTopBottomSquares = [
+    SpinnerData.middleXSquares = [
         {
             clockwise: {
                 fromSide: 'bottom',
@@ -1214,6 +1214,104 @@ define('SpinnerData',['require','exports','module'],function(require, exports, m
                 toSide: 'bottom',
                 fromPosition: { x: 0, y: -1 },
                 toPosition: { x: 0, y: -1 },
+            }
+        },
+    ];
+    SpinnerData.middleZsquares = [
+        {
+            clockwise: {
+                fromSide: 'bottom',
+                toSide: 'left',
+                fromPosition: { x: -1, y: 0 },
+                toPosition: { x: -1, y: 0 }
+            }
+        },
+        {
+            clockwise: {
+                fromSide: 'bottom',
+                toSide: 'left',
+                fromPosition: { x: 0, y: 0 },
+                toPosition: { x: 0, y: 0 }
+            }
+        },
+        {
+            clockwise: {
+                fromSide: 'bottom',
+                toSide: 'left',
+                fromPosition: { x: 1, y: 0 },
+                toPosition: { x: 1, y: 0 }
+            }
+        },
+        {
+            clockwise: {
+                fromSide: 'left',
+                toSide: 'top',
+                fromPosition: { x: -1, y: 0 },
+                toPosition: { x: 1, y: 0 }
+            }
+        },
+        {
+            clockwise: {
+                fromSide: 'left',
+                toSide: 'top',
+                fromPosition: { x: 0, y: 0 },
+                toPosition: { x: 0, y: 0 }
+            }
+        },
+        {
+            clockwise: {
+                fromSide: 'left',
+                toSide: 'top',
+                fromPosition: { x: 1, y: 0 },
+                toPosition: { x: -1, y: 0 }
+            }
+        },
+        {
+            clockwise: {
+                fromSide: 'top',
+                toSide: 'right',
+                fromPosition: { x: -1, y: 0 },
+                toPosition: { x: -1, y: 0 }
+            }
+        },
+        {
+            clockwise: {
+                fromSide: 'top',
+                toSide: 'right',
+                fromPosition: { x: 0, y: 0 },
+                toPosition: { x: 0, y: 0 }
+            }
+        },
+        {
+            clockwise: {
+                fromSide: 'top',
+                toSide: 'right',
+                fromPosition: { x: 1, y: 0 },
+                toPosition: { x: 1, y: 0 }
+            }
+        },
+        {
+            clockwise: {
+                fromSide: 'right',
+                toSide: 'bottom',
+                fromPosition: { x: -1, y: 0 },
+                toPosition: { x: 1, y: 0 }
+            }
+        },
+        {
+            clockwise: {
+                fromSide: 'right',
+                toSide: 'bottom',
+                fromPosition: { x: 0, y: 0 },
+                toPosition: { x: 0, y: 0 }
+            }
+        },
+        {
+            clockwise: {
+                fromSide: 'right',
+                toSide: 'bottom',
+                fromPosition: { x: 1, y: 0 },
+                toPosition: { x: -1, y: 0 }
             }
         },
     ];
