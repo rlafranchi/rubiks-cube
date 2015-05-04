@@ -1,11 +1,10 @@
 #rubiks-cube
 
 demo [rubiks-cube.herokuapp.com](http://rubiks-cube.herokuapp.com)
+
 built on [famo.us](https://famo.us)
 
 > Rubik's Cube.
-
-[![Build Status](https://travis-ci.org/rlafranchi/rubiks-cube.svg?branch=master)](https://travis-ci.org/rlafranchi/rubiks-cube) [![Dependency Status](https://david-dm.org/rlafranchi/rubiks-cube.svg)](https://david-dm.org/rlafranchi/rubiks-cube) [![devDependency Status](https://david-dm.org/rlafranchi/rubiks-cube/dev-status.svg)](https://david-dm.org/rlafranchi/rubiks-cube#info=devDependencies)
 
 ##Dependencies
 It is actually quite simple really
