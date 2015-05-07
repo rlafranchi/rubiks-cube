@@ -1,6 +1,6 @@
 #rubiks-cube
 
-demo [rubiks-cube.herokuapp.com](http://rubiks-cube.herokuapp.com)
+demo [rlafranchi.github.io](https://rlafranchi.github.io/rubiks-cube)
 
 built on [famo.us](https://famo.us)
 
